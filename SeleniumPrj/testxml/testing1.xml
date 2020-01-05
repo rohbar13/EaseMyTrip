@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="EaseMyTrip-Regression">
+	<test name="Build-SetUp" verbose="1">
+		<classes>
+			<class name="tests.Easemytrip" />
+		</classes>
+	</test>
+</suite>
