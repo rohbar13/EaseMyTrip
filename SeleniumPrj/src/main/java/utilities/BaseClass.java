@@ -1,10 +1,17 @@
 package utilities;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
@@ -92,8 +99,9 @@ public class BaseClass {
 			}
 		}
 
-		Reporter.log("Element is not present on the form " + element);
-
+		if(elementPresent==false) {
+			Reporter.log("Element is not present on the form " + element);
+		}
 	}
 
 	public void scrollToTheElement(WebDriver driver, WebElement element) throws InterruptedException {
@@ -111,5 +119,67 @@ public class BaseClass {
 		return dst.getAbsolutePath();
 
 	}
+	
+	
+	public Map<String, String> readTestData(String tcid) throws IOException {
+		
+		File file = new File("testdata//Testing.xlsx");
+		FileInputStream fis = new FileInputStream(file);
+		XSSFWorkbook wb = new XSSFWorkbook(fis);
+		Sheet sh = wb.getSheet("Sheet1");
+
+		int lastRowNumber = sh.getLastRowNum();
+		
+		System.out.println(lastRowNumber);
+		
+		Map<String,String> testdata = new HashMap<String, String>();
+		
+		for(int x=0;x<lastRowNumber;x++) {
+			try
+			{
+				Row row = sh.getRow(x);
+				Cell cell = row.getCell(0);
+				System.out.println(cell.getStringCellValue());
+				
+				
+				if(cell.getStringCellValue().equalsIgnoreCase(tcid)) {
+					Row valuerow = sh.getRow(x+1);
+					Cell cellvalue = row.getCell(0);
+					
+					
+					int lastCellNumber = row.getLastCellNum();
+					
+					for(int y=1;y<lastCellNumber;y++) {
+						
+						String key = row.getCell(y).getStringCellValue();
+						String value = valuerow.getCell(y).getStringCellValue();
+						
+						testdata.put(key, value);
+						
+					}
+					
+					
+					
+					
+					break;
+				}
+				
+			}catch(Exception e) {
+				
+			}
+		}
+		
+		
+		/*
+		 * for(Entry<String, String> s:testdata.entrySet()) {
+		 * System.out.println(s.getKey()+" - "+s.getValue()); }
+		 */
+		
+		return testdata;
+		
+	}
+	
+	
+	
 
 }
